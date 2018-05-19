@@ -1,11 +1,16 @@
 import Feature from "../Feature";
+import waterSprite from "./assets/water.jpg";
 
 export default class Water extends Feature {
-  constructor(x, y, context) {
-    super(x, y, context);
+  constructor() {
+    super();
+    this.sprite = new Image(1280, 720);
+    this.sprite.src = waterSprite;
   }
 
-  effect() {}
+  draw(x, y, context) {
+    context.drawImage(this.sprite, x, y, 1280, 720);
+  }
 
   interaction() {}
 }
