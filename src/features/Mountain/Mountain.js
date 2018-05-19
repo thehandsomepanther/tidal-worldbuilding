@@ -4,14 +4,10 @@ import mountainSprite from "./assets/mountain.png";
 export default class Mountain extends Feature {
   constructor() {
     super();
-    this.sprite = new Image(272, 163);
+    this.width = 272 / 3;
+    this.height = 163 / 3;
+    this.sprite = new Image(this.width, this.height);
     this.sprite.src = mountainSprite;
-    this.effectRadius = 100;
+    this.effectRadius = 40;
   }
-
-  draw(x, y, context) {
-    context.drawImage(this.sprite, x, y, 272, 163);
-  }
-
-  interaction() {}
 }
