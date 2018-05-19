@@ -31,7 +31,7 @@ class App extends Component {
       <div className="App">
         <canvas
           id={VIDEO_CANVAS_ID}
-          width={800}
+          width={700}
           height={600}
           style={{ background: "#ddd" }}
         />
