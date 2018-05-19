@@ -1,18 +1,28 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+/* global TopCodes */
+import React, { Component } from "react";
+
+const VIDEO_CANVAS_ID = "video-canvas";
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <canvas
+          id={VIDEO_CANVAS_ID}
+          width={800}
+          height={600}
+          style={{ background: "#ddd;" }}
+        />
+        <div>
+          <button
+            id="camera-button"
+            onClick={() => {
+              TopCodes.startStopVideoScan(VIDEO_CANVAS_ID);
+            }}
+          >
+            Start / Stop
+          </button>
+        </div>
       </div>
     );
   }
