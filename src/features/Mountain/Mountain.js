@@ -6,6 +6,7 @@ export default class Mountain extends Feature {
     super();
     this.sprite = new Image(272, 163);
     this.sprite.src = mountainSprite;
+    this.effectRadius = 100;
   }
 
   draw(x, y, context) {
