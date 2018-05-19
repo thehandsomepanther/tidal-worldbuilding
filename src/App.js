@@ -1,6 +1,6 @@
 /* global TopCodes */
 import React, { Component } from "react";
-import Canvas from "./Canvas";
+import Canvas from "./components/Canvas";
 
 const VIDEO_CANVAS_ID = "video-canvas";
 
