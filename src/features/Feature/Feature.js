@@ -25,10 +25,8 @@ export default class Feature {
       const xPos = x + Math.cos(angle) * dist;
       const yPos = y + Math.sin(angle) * dist;
       if (test(xPos, yPos)) {
-        // console.log("Rendering a good one!");
         context.drawImage(this.sprite, xPos, yPos, this.width, this.height);
         successCount++;
-        // console.log(successCount);
       }
 
       i++;

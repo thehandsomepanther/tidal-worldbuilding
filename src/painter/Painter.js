@@ -133,9 +133,9 @@ export default class Painter {
                 );
                 break;
               case hash("mountain", "forest"):
-                let forestFeature =
+                const forestFeature =
                   feature.type === "forest" ? feature : neighbor;
-                let mountainFeature =
+                const mountainFeature =
                   feature.type === "mountain" ? feature : neighbor;
                 this.forest.drawCluster(
                   forestFeature.x,
