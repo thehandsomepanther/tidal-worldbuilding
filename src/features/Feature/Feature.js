@@ -1,3 +1,5 @@
+import { seededRand } from "../../util";
+
 export default class Feature {
   constructor() {
     if (new.target === Feature) {
@@ -11,10 +13,10 @@ export default class Feature {
     context.drawImage(this.sprite, x, y, this.width, this.height);
   }
 
-  drawCluster(x, y, context, n = 20) {
+  drawCluster(x, y, context, code = 100, n = 30) {
     for (let i = 0; i < n; i++) {
-      const angle = Math.random() * 2 * Math.PI;
-      const dist = Math.random() * this.effectRadius;
+      const angle = seededRand(`${i}${code}`) * 2 * Math.PI;
+      const dist = seededRand(`${i}${code}`) * this.effectRadius;
 
       context.drawImage(
         this.sprite,

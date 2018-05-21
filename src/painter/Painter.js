@@ -1,6 +1,7 @@
 import Mountain from "../features/Mountain";
 import Forest from "../features/Forest";
 import { topcodeFeatures } from "../config/topcodes";
+import { seededRand } from "../util";
 
 const distance = (x1, y1, x2, y2) =>
   Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
@@ -75,7 +76,13 @@ export default class Painter {
             this.mountain.draw(feature.x, feature.y, context);
             break;
           case "forest":
-            this.forest.drawCluster(feature.x, feature.y, context);
+            // console.log(feature);
+            this.forest.drawCluster(
+              feature.x,
+              feature.y,
+              context,
+              feature.code
+            );
             break;
           default:
         }
@@ -95,11 +102,11 @@ export default class Painter {
                   this.mountain.draw(
                     feature.x +
                       (neighbor.x - feature.x) * i / numMountains +
-                      Math.random() * 2 * MOUNTAIN_VARIATION -
+                      seededRand(feature.code) * 2 * MOUNTAIN_VARIATION -
                       MOUNTAIN_VARIATION,
                     feature.y +
                       (neighbor.y - feature.y) * i / numMountains +
-                      Math.random() * 2 * MOUNTAIN_VARIATION -
+                      seededRand(neighbor.code) * 2 * MOUNTAIN_VARIATION -
                       MOUNTAIN_VARIATION,
                     context
                   );
@@ -107,12 +114,23 @@ export default class Painter {
 
                 break;
               case hash("forest", "forest"):
-                this.forest.drawCluster(feature.x, feature.y, context);
-                this.forest.drawCluster(neighbor.x, neighbor.y, context);
+                this.forest.drawCluster(
+                  feature.x,
+                  feature.y,
+                  context,
+                  feature.code
+                );
+                this.forest.drawCluster(
+                  neighbor.x,
+                  neighbor.y,
+                  context,
+                  neighbor.code
+                );
                 this.forest.drawCluster(
                   (feature.x + neighbor.x) / 2,
                   (feature.y + neighbor.y) / 2,
-                  context
+                  context,
+                  (feature.code + neighbor.code) / 2
                 );
                 break;
               case hash("mountain", "forest"):
