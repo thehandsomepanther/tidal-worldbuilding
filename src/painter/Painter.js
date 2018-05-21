@@ -12,6 +12,9 @@ const FEATURE_PRIORITIES = {
   mountain: 2
 };
 
+const MOUNTAIN_SPACING = 30;
+const MOUNTAIN_VARIATION = 5;
+
 export default class Painter {
   constructor() {
     this.mountain = new Mountain();
@@ -69,7 +72,7 @@ export default class Painter {
       if (!feature.neighbors.length) {
         switch (feature.type) {
           case "mountain":
-            this.mountain.drawCluster(feature.x, feature.y, context);
+            this.mountain.draw(feature.x, feature.y, context);
             break;
           case "forest":
             this.forest.drawCluster(feature.x, feature.y, context);
@@ -81,24 +84,36 @@ export default class Painter {
           if (!visitedPairs[hash(feature.code, neighbor.code)]) {
             switch (hash(feature.type, neighbor.type)) {
               case hash("mountain", "mountain"):
-                this.mountain.drawCluster(feature.x, feature.y, context);
-                break;
-              case hash("forest", "forest"):
-                // this code is a very bad approximation of a long rectangle
-                // TODO: redo this interaction code.
-                const a =
-                  distance(feature.x, feature.y, neighbor.x, neighbor.y) + 50;
-                const b = 2 * a / 3;
-
-                for (let i = 0; i < 40; i++) {
-                  context.drawImage(
-                    this.forest.sprite,
-                    (feature.x + neighbor.x) / 2 + Math.random() * a * 2 - a,
-                    (feature.y + neighbor.y) / 2 + Math.random() * b * 2 - b,
-                    this.forest.width,
-                    this.forest.height
+                const dist = distance(
+                  feature.x,
+                  feature.y,
+                  neighbor.x,
+                  neighbor.y
+                );
+                const numMountains = dist / MOUNTAIN_SPACING + 1;
+                for (let i = 0; i < numMountains; i++) {
+                  this.mountain.draw(
+                    feature.x +
+                      (neighbor.x - feature.x) * i / numMountains +
+                      Math.random() * 2 * MOUNTAIN_VARIATION -
+                      MOUNTAIN_VARIATION,
+                    feature.y +
+                      (neighbor.y - feature.y) * i / numMountains +
+                      Math.random() * 2 * MOUNTAIN_VARIATION -
+                      MOUNTAIN_VARIATION,
+                    context
                   );
                 }
+
+                break;
+              case hash("forest", "forest"):
+                this.forest.drawCluster(feature.x, feature.y, context);
+                this.forest.drawCluster(neighbor.x, neighbor.y, context);
+                this.forest.drawCluster(
+                  (feature.x + neighbor.x) / 2,
+                  (feature.y + neighbor.y) / 2,
+                  context
+                );
                 break;
               case hash("mountain", "forest"):
                 break;

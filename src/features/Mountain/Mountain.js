@@ -8,6 +8,6 @@ export default class Mountain extends Feature {
     this.height = 163 / 3;
     this.sprite = new Image(this.width, this.height);
     this.sprite.src = mountainSprite;
-    this.effectRadius = 40;
+    this.effectRadius = 70;
   }
 }

@@ -13,10 +13,13 @@ export default class Feature {
 
   drawCluster(x, y, context, n = 20) {
     for (let i = 0; i < n; i++) {
+      const angle = Math.random() * 2 * Math.PI;
+      const dist = Math.random() * this.effectRadius;
+
       context.drawImage(
         this.sprite,
-        x + Math.random() * this.effectRadius * 2 - this.effectRadius,
-        y + Math.random() * this.effectRadius * 2 - this.effectRadius,
+        x + Math.cos(angle) * dist,
+        y + Math.sin(angle) * dist,
         this.width,
         this.height
       );

@@ -1,5 +1,6 @@
 export const topcodeFeatures = {
   31: "mountain",
-  47: "forest",
-  55: "forest"
+  117: "mountain",
+  59: "forest",
+  109: "forest"
 };

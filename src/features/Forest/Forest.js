@@ -8,6 +8,6 @@ export default class Forest extends Feature {
     this.height = 123 / 4;
     this.sprite = new Image(this.width, this.height);
     this.sprite.src = treeSprite;
-    this.effectRadius = 30;
+    this.effectRadius = 50;
   }
 }
