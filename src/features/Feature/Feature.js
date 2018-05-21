@@ -16,7 +16,7 @@ export default class Feature {
   drawCluster(x, y, context, code = 100, n = 30) {
     for (let i = 0; i < n; i++) {
       const angle = seededRand(`${i}${code}`) * 2 * Math.PI;
-      const dist = seededRand(`${i}${code}`) * this.effectRadius;
+      const dist = seededRand(`${n - i}${code}`) * this.effectRadius;
 
       context.drawImage(
         this.sprite,

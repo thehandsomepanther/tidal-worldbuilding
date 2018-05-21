@@ -1,5 +1,3 @@
-import md5 from "md5";
-
 const randomNumbers = {};
 
 export const seededRand = code => {

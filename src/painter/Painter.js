@@ -76,7 +76,6 @@ export default class Painter {
             this.mountain.draw(feature.x, feature.y, context);
             break;
           case "forest":
-            // console.log(feature);
             this.forest.drawCluster(
               feature.x,
               feature.y,
