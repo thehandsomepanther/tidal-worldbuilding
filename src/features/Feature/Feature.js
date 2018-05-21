@@ -1,5 +1,7 @@
 import { seededRand } from "../../util";
 
+const DENSITY = 30;
+
 export default class Feature {
   constructor() {
     if (new.target === Feature) {
@@ -13,18 +15,23 @@ export default class Feature {
     context.drawImage(this.sprite, x, y, this.width, this.height);
   }
 
-  drawCluster(x, y, context, code = 100, n = 30) {
-    for (let i = 0; i < n; i++) {
+  drawCluster(x, y, context, code = 100, test = () => true) {
+    let i = 0;
+    let successCount = 0;
+    while (successCount < DENSITY) {
       const angle = seededRand(`${i}${code}`) * 2 * Math.PI;
-      const dist = seededRand(`${n - i}${code}`) * this.effectRadius;
+      const dist = seededRand(`${DENSITY - i}${code}`) * this.effectRadius;
 
-      context.drawImage(
-        this.sprite,
-        x + Math.cos(angle) * dist,
-        y + Math.sin(angle) * dist,
-        this.width,
-        this.height
-      );
+      const xPos = x + Math.cos(angle) * dist;
+      const yPos = y + Math.sin(angle) * dist;
+      if (test(xPos, yPos)) {
+        // console.log("Rendering a good one!");
+        context.drawImage(this.sprite, xPos, yPos, this.width, this.height);
+        successCount++;
+        // console.log(successCount);
+      }
+
+      i++;
     }
   }
 }

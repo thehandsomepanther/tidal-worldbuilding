@@ -133,6 +133,25 @@ export default class Painter {
                 );
                 break;
               case hash("mountain", "forest"):
+                let forestFeature =
+                  feature.type === "forest" ? feature : neighbor;
+                let mountainFeature =
+                  feature.type === "mountain" ? feature : neighbor;
+                this.forest.drawCluster(
+                  forestFeature.x,
+                  forestFeature.y,
+                  context,
+                  forestFeature.code,
+                  (i, j) =>
+                    distance(i, j, mountainFeature.x, mountainFeature.y) >
+                    this.mountain.width / 2
+                );
+
+                this.mountain.draw(
+                  mountainFeature.x,
+                  mountainFeature.y,
+                  context
+                );
                 break;
               default:
             }
