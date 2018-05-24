@@ -12,7 +12,7 @@ export default class Feature {
   }
 
   draw(x, y, context) {
-    context.drawImage(this.sprite, x, y, this.width, this.height);
+    context.drawImage(this.sprite, 700 - x, y, this.width, this.height);
   }
 
   drawCluster(x, y, context, code = 100, test = () => true) {
@@ -25,7 +25,13 @@ export default class Feature {
       const xPos = x + Math.cos(angle) * dist;
       const yPos = y + Math.sin(angle) * dist;
       if (test(xPos, yPos)) {
-        context.drawImage(this.sprite, xPos, yPos, this.width, this.height);
+        context.drawImage(
+          this.sprite,
+          700 - xPos,
+          yPos,
+          this.width,
+          this.height
+        );
         successCount++;
       }
 

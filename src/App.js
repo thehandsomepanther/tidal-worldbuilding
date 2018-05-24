@@ -33,7 +33,10 @@ class App extends Component {
           id={VIDEO_CANVAS_ID}
           width={700}
           height={600}
-          style={{ background: "#ddd" }}
+          style={{
+            background: "#ddd",
+            transform: "scale(-1, 1)"
+          }}
         />
         <Canvas topcodes={topcodes} />
         <div>
