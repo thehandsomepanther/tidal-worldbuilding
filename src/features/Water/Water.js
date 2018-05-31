@@ -6,11 +6,8 @@ export default class Water extends Feature {
     super();
     this.sprite = new Image(1280, 720);
     this.sprite.src = waterSprite;
+    this.width = 960 / 100;
+    this.height = 960 / 100;
+    this.effectRadius = 75;
   }
-
-  draw(x, y, context) {
-    context.drawImage(this.sprite, x, y, 1280, 720);
-  }
-
-  interaction() {}
 }

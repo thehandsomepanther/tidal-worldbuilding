@@ -1,5 +1,6 @@
 import Mountain from "../features/Mountain";
 import Forest from "../features/Forest";
+import Water from "../features/Water";
 import { topcodeFeatures } from "../config/topcodes";
 import { seededRand } from "../util";
 
@@ -10,16 +11,21 @@ const hash = (a, b) => [a, b].sort().join("");
 
 const FEATURE_PRIORITIES = {
   forest: 1,
-  mountain: 2
+  water: 2,
+  mountain: 3
 };
 
 const MOUNTAIN_SPACING = 30;
 const MOUNTAIN_VARIATION = 5;
 
+const WATER_SPACING = 1;
+const WATER_VARIATION = 5;
+
 export default class Painter {
   constructor() {
     this.mountain = new Mountain();
     this.forest = new Forest();
+    this.water = new Water();
   }
 
   createGraph(features) {
@@ -83,19 +89,17 @@ export default class Painter {
               feature.code
             );
             break;
+          case "water":
+            this.water.draw(feature.x, feature.y, context);
+            break;
           default:
         }
       } else {
         feature.neighbors.forEach(neighbor => {
           if (!visitedPairs[hash(feature.code, neighbor.code)]) {
+            const dist = distance(feature.x, feature.y, neighbor.x, neighbor.y);
             switch (hash(feature.type, neighbor.type)) {
               case hash("mountain", "mountain"):
-                const dist = distance(
-                  feature.x,
-                  feature.y,
-                  neighbor.x,
-                  neighbor.y
-                );
                 const numMountains = dist / MOUNTAIN_SPACING + 1;
                 for (let i = 0; i < numMountains; i++) {
                   this.mountain.draw(
@@ -152,6 +156,24 @@ export default class Painter {
                   mountainFeature.y,
                   context
                 );
+                break;
+              case hash("water", "water"):
+                const top = feature.y < neighbor.y ? feature : neighbor;
+                const bottom = feature.y < neighbor.y ? neighbor : feature;
+                let theta = Math.atan((bottom.x - top.x) / (bottom.y - top.y));
+
+                for (let i = 0; i < dist / WATER_SPACING; i++) {
+                  const newDist =
+                    dist * (dist / WATER_SPACING - i) / (dist / WATER_SPACING);
+                  const r = seededRand(feature.code + neighbor.code + i);
+                  theta += r > 0.5 ? 2 * Math.PI / 180 : -2 * Math.PI / 180;
+
+                  this.water.draw(
+                    bottom.x - Math.sin(theta) * newDist,
+                    bottom.y - Math.cos(theta) * newDist,
+                    context
+                  );
+                }
                 break;
               default:
             }

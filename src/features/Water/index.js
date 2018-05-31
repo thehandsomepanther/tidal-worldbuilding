@@ -1,3 +1,3 @@
-import Water from "Water";
+import Water from "./Water";
 
 export default Water;
