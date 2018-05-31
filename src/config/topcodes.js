@@ -1,6 +1,6 @@
 export const topcodeFeatures = {
   47: "water",
-  31: "mountain",
+  31: "water",
   55: "water",
   61: "forest",
   117: "forest",

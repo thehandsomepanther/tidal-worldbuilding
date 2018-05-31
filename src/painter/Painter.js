@@ -19,7 +19,8 @@ const MOUNTAIN_SPACING = 30;
 const MOUNTAIN_VARIATION = 5;
 
 const WATER_SPACING = 1;
-const WATER_VARIATION = 5;
+
+let interactions = {};
 
 export default class Painter {
   constructor() {
@@ -115,6 +116,20 @@ export default class Painter {
                   );
                 }
 
+                interactions[[[feature.x, feature.y]]] =
+                  interactions[[[feature.x, feature.y]]] || [];
+                interactions[[[feature.x, feature.y]]].push([
+                  neighbor.x,
+                  neighbor.y
+                ]);
+
+                interactions[[neighbor.x, neighbor.y]] =
+                  interactions[[neighbor.x, neighbor.y]] || [];
+                interactions[[neighbor.x, neighbor.y]].push([
+                  feature.x,
+                  feature.y
+                ]);
+
                 break;
               case hash("forest", "forest"):
                 this.forest.drawCluster(
@@ -174,6 +189,21 @@ export default class Painter {
                     context
                   );
                 }
+
+                interactions[[feature.x, feature.y]] =
+                  interactions[[feature.x, feature.y]] || [];
+                interactions[[feature.x, feature.y]].push([
+                  neighbor.x,
+                  neighbor.y
+                ]);
+
+                interactions[[neighbor.x, neighbor.y]] =
+                  interactions[[neighbor.x, neighbor.y]] || [];
+                interactions[[neighbor.x, neighbor.y]].push([
+                  feature.x,
+                  feature.y
+                ]);
+
                 break;
               default:
             }
@@ -181,6 +211,41 @@ export default class Painter {
             visitedPairs[hash(feature.code, neighbor.code)] = true;
           }
         });
+
+        for (let i = 0; i < Object.keys(interactions).length; i++) {
+          let coordKeys = JSON.parse(`[${Object.keys(interactions)[i]}]`);
+          if (interactions[coordKeys].length > 1) {
+            for (let j = 0; j < interactions[coordKeys].length - 1; j++) {
+              const p1 = interactions[coordKeys][j];
+              const theta1 = Math.atan(
+                (coordKeys[0] - p1[0]) / (coordKeys[1] - p1[1])
+              );
+              for (let k = j + 1; k < interactions[coordKeys].length; k++) {
+                const p2 = interactions[coordKeys][k];
+                const theta2 = Math.atan(
+                  (coordKeys[0] - p2[0]) / (coordKeys[1] - p2[1])
+                );
+                if (theta1 + theta2 < 90) {
+                  context.beginPath();
+                  context.strokeStyle = "#FF0000";
+                  context.lineWidth = 10;
+                  context.ellipse(
+                    700 - coordKeys[0],
+                    coordKeys[1],
+                    50,
+                    50,
+                    0,
+                    0,
+                    2 * Math.PI
+                  );
+                  context.stroke();
+                }
+              }
+            }
+          }
+        }
+
+        interactions = {};
       }
     });
   }
