@@ -28,6 +28,8 @@ export default class Canvas extends Component {
 
       const context = this.canvasRef.getContext("2d");
       context.clearRect(0, 0, width, height);
+      context.fillStyle = "#b0e68b";
+      context.fillRect(0, 0, width, height);
       this.painter.paint(context, topcodes);
       context.drawImage(this.mapSprite, 0, 0, width, height);
     }
