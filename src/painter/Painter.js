@@ -21,6 +21,7 @@ const MOUNTAIN_VARIATION = 5;
 const WATER_SPACING = 1;
 
 let interactions = {};
+let wwInteractions = {};
 
 export default class Painter {
   constructor() {
@@ -53,7 +54,7 @@ export default class Painter {
     return features;
   }
 
-  paint(context, topcodes, onError) {
+  paint(context, topcodes, mapSprite, width, height, onError) {
     const features = topcodes
       .map(
         topcode =>
@@ -204,6 +205,20 @@ export default class Painter {
                   feature.y
                 ]);
 
+                wwInteractions[[feature.x, feature.y]] =
+                  wwInteractions[[feature.x, feature.y]] || [];
+                wwInteractions[[feature.x, feature.y]].push([
+                  neighbor.x,
+                  neighbor.y
+                ]);
+
+                wwInteractions[[neighbor.x, neighbor.y]] =
+                  wwInteractions[[neighbor.x, neighbor.y]] || [];
+                wwInteractions[[neighbor.x, neighbor.y]].push([
+                  feature.x,
+                  feature.y
+                ]);
+
                 break;
               default:
             }
@@ -230,6 +245,7 @@ export default class Painter {
                     "Your features are at an acute angle! Mountains and rivers should generally lie along a line."
                   );
 
+                  context.save();
                   context.beginPath();
                   context.strokeStyle = "#FF0000";
                   context.lineWidth = 10;
@@ -243,13 +259,103 @@ export default class Painter {
                     2 * Math.PI
                   );
                   context.stroke();
+                  context.restore();
                 }
               }
             }
           }
         }
 
+        context.drawImage(mapSprite, 0, 0, width, height);
+
+        const validOceanPoints = new Set([]);
+
+        const isPointInOcean = (x, y) => {
+          const { data } = context.getImageData(700 - x, y, 1, 1);
+          return data[0] === 0xff && data[1] === 0xff && data[2] === 0xff;
+        };
+
+        for (let i = 0; i < Object.keys(wwInteractions).length; i++) {
+          const coordKeys = JSON.parse(`[${Object.keys(wwInteractions)[i]}]`);
+          let pointsNotInOcean = isPointInOcean(coordKeys[0], coordKeys[1])
+            ? []
+            : [coordKeys];
+
+          if (pointsNotInOcean.length) {
+            for (let j = 0; j < wwInteractions[coordKeys].length; j++) {
+              const p = wwInteractions[coordKeys][j];
+              if (isPointInOcean(p[0], p[1])) {
+                pointsNotInOcean = [];
+                break;
+              } else {
+                pointsNotInOcean.push(p);
+              }
+            }
+          }
+
+          if (validOceanPoints.has(JSON.stringify(coordKeys))) {
+            pointsNotInOcean = [];
+          }
+
+          if (pointsNotInOcean.length === 0) {
+            validOceanPoints.add(JSON.stringify(coordKeys));
+
+            wwInteractions[coordKeys].forEach(coord => {
+              validOceanPoints.add(JSON.stringify(coord));
+            });
+          }
+        }
+
+        console.log("---");
+        console.log(validOceanPoints);
+
+        Object.keys(wwInteractions).forEach(coord => {
+          const p = JSON.parse(`[${coord}]`);
+
+          if (validOceanPoints.has(JSON.stringify(p))) {
+            console.log(wwInteractions[p]);
+            wwInteractions[p].forEach(c => {
+              validOceanPoints.add(JSON.stringify(c));
+            });
+          } else {
+            for (let i = 0; i < Object.keys(wwInteractions).length; i++) {
+              const c = Object.keys(wwInteractions)[i];
+              if (validOceanPoints.has(JSON.stringify(c))) {
+                validOceanPoints.add(JSON.stringify(p));
+                wwInteractions[p].forEach(c => {
+                  validOceanPoints.add(JSON.stringify(c));
+                });
+                break;
+              }
+            }
+          }
+        });
+
+        console.log(interactions);
+        console.log(wwInteractions);
+
+        Object.keys(wwInteractions).forEach(coord => {
+          const p = JSON.parse(`[${coord}]`);
+          if (!validOceanPoints.has(JSON.stringify(p))) {
+            console.log(`${JSON.stringify(p)} not in validOceanPoints`);
+            context.save();
+            context.beginPath();
+            context.strokeStyle = "#FF0000";
+            context.lineWidth = 10;
+            context.ellipse(700 - p[0], p[1], 50, 50, 0, 0, 2 * Math.PI);
+            context.stroke();
+            context.closePath();
+            context.restore();
+          } else {
+            console.log(`${JSON.stringify(p)} in validOceanPoints`);
+          }
+        });
+
+        console.log(validOceanPoints);
+        console.log("====");
+
         interactions = {};
+        wwInteractions = {};
       }
     });
   }

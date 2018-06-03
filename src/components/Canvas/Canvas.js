@@ -31,9 +31,16 @@ export default class Canvas extends Component {
       context.clearRect(0, 0, width, height);
       context.fillStyle = "#b0e68b";
       context.fillRect(0, 0, width, height);
-      this.painter.paint(context, topcodes, error => {
-        notifications.push(error);
-      });
+      this.painter.paint(
+        context,
+        topcodes,
+        this.mapSprite,
+        width,
+        height,
+        error => {
+          notifications.push(error);
+        }
+      );
       context.drawImage(this.mapSprite, 0, 0, width, height);
     }
 
