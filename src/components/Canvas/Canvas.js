@@ -23,6 +23,7 @@ export default class Canvas extends Component {
 
   render() {
     const { topcodes } = this.props;
+    const notifications = [];
     if (this.canvasRef && topcodes) {
       const { width, height } = this.canvasRef;
 
@@ -30,10 +31,41 @@ export default class Canvas extends Component {
       context.clearRect(0, 0, width, height);
       context.fillStyle = "#b0e68b";
       context.fillRect(0, 0, width, height);
-      this.painter.paint(context, topcodes);
+      this.painter.paint(context, topcodes, error => {
+        notifications.push(error);
+      });
       context.drawImage(this.mapSprite, 0, 0, width, height);
     }
 
-    return this.canvas;
+    return (
+      <div
+        style={{ position: "relative", width: 700, display: "inline-block" }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            left: "50%",
+            width: "400px",
+            transform: "translateX(-50%)"
+          }}
+        >
+          {notifications.map((notification, i) => (
+            <div
+              style={{
+                padding: "1rem",
+                borderRadius: "4px",
+                textAlign: "center",
+                backgroundColor: "orange",
+                fontFamily: "sans-serif"
+              }}
+              key={i}
+            >
+              ⚠️ {notification}
+            </div>
+          ))}
+        </div>
+        {this.canvas}
+      </div>
+    );
   }
 }

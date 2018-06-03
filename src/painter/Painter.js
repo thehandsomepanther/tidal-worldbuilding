@@ -53,7 +53,7 @@ export default class Painter {
     return features;
   }
 
-  paint(context, topcodes) {
+  paint(context, topcodes, onError) {
     const features = topcodes
       .map(
         topcode =>
@@ -226,6 +226,10 @@ export default class Painter {
                   (coordKeys[0] - p2[0]) / (coordKeys[1] - p2[1])
                 );
                 if (theta1 + theta2 < 90) {
+                  onError(
+                    "Your features are at an acute angle! Mountains and rivers should generally lie along a line."
+                  );
+
                   context.beginPath();
                   context.strokeStyle = "#FF0000";
                   context.lineWidth = 10;
